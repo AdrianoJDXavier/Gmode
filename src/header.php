@@ -4,9 +4,14 @@
 
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-<script src="js/script.js"></script>
-<link rel="stylesheet" href="src/css/style.css">
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<?php
 
+error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors',1);
+
+include_once("functions.php");
+?>
 <div class="container">
     
