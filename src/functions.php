@@ -45,4 +45,23 @@ function listColunsUsage($conn, $base, $table){
     $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
     return $resultado;
 }
+
+function createFolder($nome_pasta)
+{
+    $root = $_SERVER["DOCUMENT_ROOT"];
+    $dir = $root . '/'.$nome_pasta.'/';
+
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+
+    chmod($dir, 0777);
+}
+
+function createFile($pasta, $nome_arquivo, $conteudo)
+{
+    $arquivo = fopen($pasta . '/' . $nome_arquivo, 'w');
+    fwrite($arquivo, $conteudo);
+    fclose($arquivo);
+}
 ?>
