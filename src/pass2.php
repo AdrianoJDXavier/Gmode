@@ -1,16 +1,10 @@
 <?php
 include_once("header.php");
-define('HOST', $_POST['host']);
-define('USER', $_POST['user']);
-define('PASS', $_POST['senha']);
-define('DBNAME', '');
-
-try {
-    $conn = new pdo('mysql:host=' . HOST . ';dbname=' . DBNAME, USER, PASS);
-    /* echo "Conexão com banco de dados realizada com sucesso."; */
-} catch (PDOException $e) {
-    echo "Erro: Conexão com banco de dados não foi realizada com sucesso. Erro gerado " . $e->getMessage();
-}
+session_start();
+$_SESSION['host'] = $_POST['host']; 
+$_SESSION['user'] = $_POST['user'];
+$_SESSION['senha'] = $_POST['senha'];
+include_once("conexão.php");
 
 $databases = listDatabase($conn);
 
@@ -49,6 +43,7 @@ $databases = listDatabase($conn);
 <script>
     function returnTable(base) {
         console.log(base)
+        
         $.ajax({
                 url: "ajax_table.php",
                 type: 'post',
