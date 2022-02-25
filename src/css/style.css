@@ -10,6 +10,7 @@
     -webkit-box-shadow: 5px 5px 10px 1px rgba(1,6,23,0.62); 
     box-shadow: 5px 5px 10px 1px rgba(1,6,23,0.62);
     border-radius: 10px;
+    padding-bottom: 1%;
 }
 
 .item_card{
@@ -43,6 +44,17 @@
 
   .td-acao{
     width: 15% !important;
+  }
+
+  .img-logo{
+    max-width: 70%;
+    text-align: center;
+}
+
+  .img-logo img{
+      max-width: 40%;
+      height: auto;
+      padding: 10% 0% 10% 0%;
   }
 
   
