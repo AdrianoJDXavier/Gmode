@@ -19,13 +19,13 @@ require_once 'header.php';
             <div class="form-group row">
                 <label for="host" class="col-sm-2 col-form-label">Host:</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="host" placeholder="localhost">
+                    <input type="text" class="form-control" name="host" placeholder="localhost" required>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="user" class="col-sm-2 col-form-label">Password:</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="user" placeholder="User">
+                    <input type="text" class="form-control" name="user" placeholder="User" required>
                 </div>
             </div>
             <div class="form-group row">

@@ -16,12 +16,12 @@ $databases = listDatabase($conn);
         G-mode
     </div>
     <div class="item_card">
-        <form>
-            <h4 style="text-align: center;">Passo 2: Selecione a Base</h4>
+        <form action="pass3.php" method="post">
+            <h4 style="text-align: center;">Passo 2: </h4>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <label for="base">Base:</label>
+                        <label for="base">Selecione a Base:</label>
                         <select name="base" id="base" class="form-control" onchange="returnTable(this.value)">
                             <option>-----</option>
                             <?php
@@ -32,7 +32,7 @@ $databases = listDatabase($conn);
                         </select>
                     </div>
                 </div>
-                <div class="col-md-6" id="table"></div>
+                <div class="col-md-8" id="table"></div>
             </div>
         </form>
     </div>
