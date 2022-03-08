@@ -1,8 +1,4 @@
 <?php
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
-
 include_once("header.php");
 session_start();
 $_SESSION['host'] = $_POST['host'];
@@ -12,7 +8,7 @@ include_once("conexão.php");
 include_once("../strings/string.php");
 $pasta = createFolder($_POST['table']);
 $css = createSubFolder($pasta, 'css');
-echo $conexao;
+
 createFile($pasta, 'conexao.php', $conexao);
 createFile($pasta, 'header.php', $header);
 $index = "<?php

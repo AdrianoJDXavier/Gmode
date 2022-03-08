@@ -27,7 +27,7 @@ function listColumns($conn, $base, $table){
             WHERE
                 c.TABLE_SCHEMA = '$base'
                     AND c.TABLE_NAME = '$table'";
-               
+              
     $query = $conn->query($sql);
     $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
     return $resultado;
@@ -81,6 +81,7 @@ function createFile($pasta, $nome_arquivo, $conteudo)
 
 function createView($conn, $pasta, $table, $base){
 $colunas = listColumns($conn, $base, $table);
+
 $lista = 'lista';
 $conn = 'conn';
 $list = 'list';
@@ -90,6 +91,7 @@ include_once '../conexao.php';
 include_once 'function.php';
 $$lista = list_".$table."($$conn);
 ?>
+<button class=\"btn btn-primary\">Inserir</button>
 <div class=\"card\">
     <div class=\"card-header text-center bg-default\">
         ".strtoupper($table)."
@@ -142,5 +144,11 @@ function list_'.$table.'($conn){
 }
 ?>';   
 createFile($pasta, 'function.php', $conteudo);
+}
+
+function echoPre($valor){
+    echo "<pre>";
+    print_r($valor);
+    echo "</pre>";
 }
 ?>

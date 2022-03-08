@@ -3,7 +3,7 @@ $conexao = '<?php
 define(\'HOST\', \''.$_POST['host'].'\');
 define(\'USER\', \''.$_POST['user'].'\');
 define(\'PASS\', \''.$_POST['senha'].'\');
-define(\'DBNAME\', \'\');
+define(\'DBNAME\',\''.$_POST['base'].'\');
 
 try {
     $conn = new pdo(\'mysql:host=\' . HOST . \';dbname=\' . DBNAME, USER, PASS);
