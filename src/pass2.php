@@ -17,6 +17,9 @@ $databases = listDatabase($conn);
     </div>
     <div class="item_card">
         <form action="pass3.php" method="post">
+            <input type="hidden" name="host" value="<?=$_POST['host']?>">
+            <input type="hidden" name="user" value="<?=$_POST['user']?>">
+            <input type="hidden" name="senha" value="<?=$_POST['senha']?>">
             <h4 style="text-align: center;">Passo 2: </h4>
             <div class="row">
                 <div class="col-md-4">
