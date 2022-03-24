@@ -10,7 +10,7 @@ $pasta = createFolder($_POST['table']);
 $css = createSubFolder($pasta, 'css');
 
 createFile($pasta, 'conexao.php', $conexao);
-createFile($pasta, 'header.php', $header);
+createHeader($pasta, $_POST['tables']);
 $index = "<?php
 header(\"Location:".$_POST['table']."/view.php\");
 ?>";
@@ -19,6 +19,8 @@ createFile($css, 'style.css', $style);
 foreach($_POST['tables'] as $table){
     $subPasta = createSubFolder($pasta, $table);
     createView($conn, $subPasta, $table, $_POST['base']);
-    createFunctions($subPasta, $table);
+    createForms($conn, $subPasta, $table, $_POST['base']);
+    createData($conn, $subPasta, $table, $_POST['base']);
+    createFunctions($conn, $subPasta, $table, $_POST['base']);
 }
 ?>

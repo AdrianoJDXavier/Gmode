@@ -89,24 +89,4 @@ ini_set('display_errors',1);
 include_once('../conexao.php');
 ?>";
 
-
-$viewInit = "<?php
-require_once 'header.php';
-?>
-    <div class=\"card\">
-        <div class=\"card-header text-center bg-default\">
-            TESTE REALIZADOS
-        </div>
-        <div class=\"item_card table-responsive\">
-            <table id=\"example\" class=\"display\" style=\"width:100%\">
-                <thead>
-                    <tr>\n"; 
-
-$viewMidle = "</tr>
-</thead>
-</table>
-</div>
-</div>
-<div id=\"getModal\"></div>
-</div>";
 ?>
