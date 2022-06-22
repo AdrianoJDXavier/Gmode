@@ -26,7 +26,9 @@ function listColumns($conn, $base, $table){
                 INFORMATION_SCHEMA.COLUMNS AS c
             WHERE
                 c.TABLE_SCHEMA = '$base'
-                    AND c.TABLE_NAME = '$table'";
+                    AND c.TABLE_NAME = '$table'
+                    AND (COLUMN_KEY <> 'PRI'
+                    AND EXTRA <> 'auto_increment')";
               
     $query = $conn->query($sql);
     $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -42,6 +44,24 @@ function listColunsUsage($conn, $base, $table){
                 table_schema = '$base'
                     AND table_name = '$table'";
                
+    $query = $conn->query($sql);
+    $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
+    return $resultado;
+}
+
+function getFK($conn, $base, $table, $column){
+    $sql = "SELECT 
+                CONSTRAINT_NAME,
+                COLUMN_NAME,
+                REFERENCED_TABLE_NAME,
+                REFERENCED_COLUMN_NAME
+            FROM
+                INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE
+                TABLE_SCHEMA = '$base'
+                    AND TABLE_NAME = '$table'
+                    AND REFERENCED_TABLE_NAME <> ''
+                    AND COLUMN_NAME = '$column'";
     $query = $conn->query($sql);
     $resultado = $query->fetchAll(PDO::FETCH_ASSOC);
     return $resultado;
@@ -80,24 +100,64 @@ function createFile($pasta, $nome_arquivo, $conteudo)
 }
 
 function createHeader($pasta, $tables){
+    if(count($tables) > 4){
+        $array1 = array_slice($tables, 0, 4);
+        $array2 = array_slice($tables, 4);
+    }else{
+        $array1 = $tables;
+    }
+
+
     $header = "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">\n
     <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js\"></script>\n
     <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">\n
     <script src=\"https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js\"></script>\n
     <link rel=\"stylesheet\" href=\"https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css\">\n
     <link rel=\"stylesheet\" href=\"../css/style.css\">\n\n
-    <div class=\"container\">
-    \t<div class=\"grupo_btn\">\n";
-    foreach($tables as $table){
-        $header .= "\t\t<a href=\"../".$table."/view.php\"><button class=\"btn btn-primary btn-mb-2\">".$table."</button></a>\n";
-    }
     
-    $header .= "\t</div>
+    <nav class=\"navbar navbar-expand-lg navbar-light bg-light\">
+  <a class=\"navbar-brand\" href=\"#\">Navbar</a>
+  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarNavDropdown\" aria-controls=\"navbarNavDropdown\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">
+    <span class=\"navbar-toggler-icon\"></span>
+  </button>
+  <div class=\"collapse navbar-collapse\" id=\"navbarNavDropdown\">
+    <ul class=\"navbar-nav\">";
+    foreach($array1 as $array){
+      $header .= "<li class=\"nav-item\">
+        <a class=\"nav-link\" href=\"../".$array."/view.php\">".ucfirst($array)."<span class=\"sr-only\">(current)</span></a>
+      </li>";
+    }
+    if(isset($array2) && !empty($array2)){
+        $header .= "<li class=\"nav-item dropdown\">
+        <a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"navbarDropdownMenuLink\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">
+          Dropdown link
+        </a>
+        <div class=\"dropdown-menu\" aria-labelledby=\"navbarDropdownMenuLink\">";
+        foreach($array2 as $array){
+            $header .= "<a class=\"dropdown-item\" href=\"../".$array."/view.php\">".ucfirst($array)."</a>";
+        }
+        $header .= "</div>";  
+    }
+      $header .= "
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class=\"container\">
     <?php
     include_once('../conexao.php');
     ?>";
     
         createFile($pasta, 'header.php', $header);
+}
+
+function CreateFooter($pasta){
+    $footer = "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js\" integrity=\"sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q\" crossorigin=\"anonymous\"></script>
+    <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\" integrity=\"sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl\" crossorigin=\"anonymous\"></script>
+    
+    </div>";
+
+    createFile($pasta, 'footer.php', $footer);
 }
 
 function createView($conn, $pasta, $table, $base){
@@ -147,7 +207,10 @@ $conteudo .= "\t\t\t\t</tr>\n\t\t\t\t<?php }
 \t</div>
 </div>
 <div id=\"getModal\"></div>
-</div>";
+</div>
+<?php
+include_once '../footer.php';
+?>";
 createFile($pasta, 'view.php', $conteudo);
 }
 
@@ -171,12 +234,24 @@ $conteudo .= "<div class=\"card\">
         <form action=\"data.php\" method=\"post\">
             <input type=\"hidden\" name=\"enviar\" value=\"enviar\">\n";
             foreach($colunas as $coluna){
-            $conteudo .= "\t\t\t<div class=\"form-group row\">
-                <label for=\"".$coluna['COLUMN_NAME']."\" class=\"col-sm-2 col-form-label\">".$coluna['COLUMN_NAME'].":</label>
-                <div class=\"col-sm-10\">
-                    <input type=\"text\" class=\"form-control\" name=\"".$coluna['COLUMN_NAME']."\" required>
-                </div>
-            </div>\n";
+            $isFK = '' /* getFK($conn, $base, $table, $coluna['COLUMN_NAME']) */;
+            if(empty($isFK)){
+                $conteudo .= "\t\t\t<div class=\"form-group row\">
+                    <label for=\"".$coluna['COLUMN_NAME']."\" class=\"col-sm-2 col-form-label\">".$coluna['COLUMN_NAME'].":</label>
+                    <div class=\"col-sm-10\">
+                        <input type=\"text\" class=\"form-control\" name=\"".$coluna['COLUMN_NAME']."\" required>
+                    </div>
+                </div>\n";
+            }else{
+                $conteudo .= "\t\t\t<div class=\"form-group row\">
+                    <label for=\"".$coluna['COLUMN_NAME']."\" class=\"col-sm-2 col-form-label\">".$coluna['COLUMN_NAME'].":</label>
+                    <div class=\"col-sm-10\">
+                        <select class=\"form-control\" name=\"".$coluna['COLUMN_NAME']."\" required>
+                        <option>-----</option>
+                        </select>
+                    </div>
+                </div>\n";
+            }
             }
             $conteudo .= "\t\t\t<div>
                 <button class=\"btn btn-primary\" type=\"submit\">Enviar</button>
@@ -184,7 +259,10 @@ $conteudo .= "<div class=\"card\">
         </form>
     </div>
     </div>
-</div>";
+</div>
+<?php
+include_once '../footer.php';
+?>";
 createFile($pasta, 'form_insert.php', $conteudo);
 }
 

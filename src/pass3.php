@@ -11,6 +11,7 @@ $css = createSubFolder($pasta, 'css');
 
 createFile($pasta, 'conexao.php', $conexao);
 createHeader($pasta, $_POST['tables']);
+CreateFooter($pasta);
 $index = "<?php
 header(\"Location:".$_POST['table']."/view.php\");
 ?>";
